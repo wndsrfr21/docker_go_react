@@ -2,6 +2,10 @@
 # The base go-image
 FROM golang:1.17-alpine
  
+# Set environment variable
+ENV APP_NAME docker-go-base-app
+ENV CMD_PATH main.go
+
 # Create a directory for the app
 RUN mkdir /app
 RUN go get -u github.com/gin-gonic/gin
@@ -11,9 +15,11 @@ COPY . /app
  
 # Set working directory
 WORKDIR /app
- 
-# Run command as described:
-# go build will build an executable file named server in the current directory
+
+# Expose application port
+EXPOSE 8081
+
+# "go build" will build an executable file named server in the current directory
 RUN go build -o server . 
  
 # Run the server executable
