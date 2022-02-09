@@ -8,7 +8,7 @@ ENV CMD_PATH main.go
 
 # Create a directory for the app
 RUN mkdir /app
-RUN go get -u github.com/gin-gonic/gin
+RUN go get github.com/kataras/iris/v12@master
  
 # Copy all files from the current directory to the app directory
 COPY . /app
