@@ -1,24 +1,56 @@
 package main
 
-import (
-  "github.com/gin-gonic/gin"
-)
+import "github.com/kataras/iris/v12"
 
 func main() {
-  // Creates default gin router with Logger and Recovery middleware already attached
-  router := gin.Default()
+    app := iris.New()
 
-  // Create API route group
-  api := router.Group("/api")
-  {
-    // Add /hello GET route to router and define route handler function
-    api.GET("/hello", func(ctx *gin.Context) {
-      ctx.JSON(200, gin.H{"msg": "world"})
-    })
-  }
+    booksAPI := app.Party("/books")
+    {
+        booksAPI.Use(iris.Compression)
 
-  router.NoRoute(func(ctx *gin.Context) { ctx.JSON(http.StatusNotFound, gin.H{}) })
+        // GET: http://localhost:8080/books
+        booksAPI.Get("/", list)
+        // POST: http://localhost:8080/books
+        booksAPI.Post("/", create)
+    }
 
-  // Start listening and serving requests
-  router.Run(":8080")
+    app.Listen(":8080")
+}
+
+// Book example.
+type Book struct {
+    Title string `json:"title"`
+}
+
+func list(ctx iris.Context) {
+    books := []Book{
+        {"Mastering Concurrency in Go"},
+        {"Go Design Patterns"},
+        {"Black Hat Go"},
+    }
+
+    ctx.JSON(books)
+    // TIP: negotiate the response between server's prioritizes
+    // and client's requirements, instead of ctx.JSON:
+    // ctx.Negotiation().JSON().MsgPack().Protobuf()
+    // ctx.Negotiate(books)
+}
+
+func create(ctx iris.Context) {
+    var b Book
+    err := ctx.ReadJSON(&b)
+    // TIP: use ctx.ReadBody(&b) to bind
+    // any type of incoming data instead.
+    if err != nil {
+        ctx.StopWithProblem(iris.StatusBadRequest, iris.NewProblem().
+            Title("Book creation failure").DetailErr(err))
+        // TIP: use ctx.StopWithError(code, err) when only
+        // plain text responses are expected on errors.
+        return
+    }
+
+    println("Received Book: " + b.Title)
+
+    ctx.StatusCode(iris.StatusCreated)
 }
