@@ -9,13 +9,14 @@ ENV CMD_PATH main.go
 # Create a directory for the app
 RUN mkdir /app
 #RUN go get github.com/kataras/iris/v12@master
-RUN wget https://raw.githubusercontent.com/golang/example/master/hello/hello.go
+#RUN wget https://raw.githubusercontent.com/golang/example/master/hello/hello.go
  
 # Copy all files from the current directory to the app directory
 COPY . /app
  
 # Set working directory
 WORKDIR /app
+RUN go mod tidy
 
 # Expose application port
 EXPOSE 8081
