@@ -3,7 +3,7 @@
 FROM golang:1.17-alpine
  
 # Set environment variable
-ENV APP_NAME docker-go-base-app
+ENV APP_NAME docker-go-starter-template
 ENV CMD_PATH main.go
 
 # Create a directory for the app
