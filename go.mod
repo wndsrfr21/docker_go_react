@@ -1,5 +1,5 @@
 module rgb
 
-go 1.16
+go 1.17
 
-require github.com/gin-gonic/gin v1.6.3
+require github.com/kataras/iris/v12@master
