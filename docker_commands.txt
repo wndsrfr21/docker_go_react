@@ -1,3 +1,3 @@
-docker build -t docker-go-starter-template .
+Use this command to BUILD the docker image: 'docker build -t docker-go-starter-template . '
 
-docker run -it --rm -p 5051:5050 docker-go-starter-template
+Use this command to START the docker image: 'docker run -it --rm -p 5051:5050 docker-go-starter-template'
