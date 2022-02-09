@@ -8,7 +8,8 @@ ENV CMD_PATH main.go
 
 # Create a directory for the app
 RUN mkdir /app
-RUN go get github.com/kataras/iris/v12@master
+#RUN go get github.com/kataras/iris/v12@master
+RUN git clone https://github.com/golang/example/blob/master/hello/hello.go 
  
 # Copy all files from the current directory to the app directory
 COPY . /app
