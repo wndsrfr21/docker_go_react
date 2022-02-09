@@ -1,56 +1,22 @@
 package main
 
-import "github.com/kataras/iris/v12"
+import (
+    "fmt"
+    "html"
+    "log"
+    "net/http"
+)
 
 func main() {
-    app := iris.New()
 
-    booksAPI := app.Party("/books")
-    {
-        booksAPI.Use(iris.Compression)
+    http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+        fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
+    })
 
-        // GET: http://localhost:8080/books
-        booksAPI.Get("/", list)
-        // POST: http://localhost:8080/books
-        booksAPI.Post("/", create)
-    }
+    http.HandleFunc("/hi", func(w http.ResponseWriter, r *http.Request){
+        fmt.Fprintf(w, "Hi")
+    })
 
-    app.Listen(":8080")
-}
+    log.Fatal(http.ListenAndServe(":8081", nil))
 
-// Book example.
-type Book struct {
-    Title string `json:"title"`
-}
-
-func list(ctx iris.Context) {
-    books := []Book{
-        {"Mastering Concurrency in Go"},
-        {"Go Design Patterns"},
-        {"Black Hat Go"},
-    }
-
-    ctx.JSON(books)
-    // TIP: negotiate the response between server's prioritizes
-    // and client's requirements, instead of ctx.JSON:
-    // ctx.Negotiation().JSON().MsgPack().Protobuf()
-    // ctx.Negotiate(books)
-}
-
-func create(ctx iris.Context) {
-    var b Book
-    err := ctx.ReadJSON(&b)
-    // TIP: use ctx.ReadBody(&b) to bind
-    // any type of incoming data instead.
-    if err != nil {
-        ctx.StopWithProblem(iris.StatusBadRequest, iris.NewProblem().
-            Title("Book creation failure").DetailErr(err))
-        // TIP: use ctx.StopWithError(code, err) when only
-        // plain text responses are expected on errors.
-        return
-    }
-
-    println("Received Book: " + b.Title)
-
-    ctx.StatusCode(iris.StatusCreated)
 }
